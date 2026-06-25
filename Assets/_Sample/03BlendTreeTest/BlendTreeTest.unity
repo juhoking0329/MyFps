@@ -3167,6 +3167,8 @@ MonoBehaviour:
   playerInput: {fileID: 8869362135638045205}
   walkSpeed: 2
   runSpeed: 5
+  rotationSpeed: 10
+  speedDampTime: 0.1
 --- !u!114 &8869362135638045205
 MonoBehaviour:
   m_ObjectHideFlags: 0

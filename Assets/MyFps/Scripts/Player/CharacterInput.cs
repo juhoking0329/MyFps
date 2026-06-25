@@ -71,6 +71,8 @@ namespace MyFps
         {
             //inputSystem class 인스턴스 활성화
             inputActions.Enable();
+            // 활성화될 때 look 입력값 초기화
+            look = Vector2.zero;
         }
 
         private void OnDisable()

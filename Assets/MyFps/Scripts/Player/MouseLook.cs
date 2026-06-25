@@ -32,6 +32,14 @@ namespace MyFps
             input = GetComponent<CharacterInput>();
         }
 
+        private void OnEnable()
+        {
+            // 활성화될 때 현재 트랜스폼 회전값으로 초기화
+            cameraTargetPitch = 0f;
+            transform.rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
+            cameraRoot.localRotation = Quaternion.identity;
+        }
+
         private void Start()
         {
             //마우스 커서 초기화
