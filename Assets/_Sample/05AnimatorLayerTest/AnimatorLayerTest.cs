@@ -12,7 +12,7 @@ namespace MySample
         //참조
         private Animator animator;
 
-        [SerializeField] private string isMoving = "IsMove";
+        //[SerializeField] private string isMoving = "IsMove";
 
         //인풋 액션
         public InputActionReference moveActions;

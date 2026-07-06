@@ -8,36 +8,27 @@ namespace MyFps
     public class MouseLook : MonoBehaviour
     {
         #region Variables
-        public Transform cameraRoot;        //카메라 트래킹 오브젝트 인스턴스
+        public Transform cameraRoot;    //카메라 트래킹 오브젝트 인스턴스
 
         //참조
         private CharacterInput input;
 
         //회전
         [SerializeField] private float rotationSpeed = 1f;      //회전 속도
-
         [SerializeField] private float sensivity = 100f;        //마우스 움직임 감도, 보정값
 
         private float cameraTargetPitch = 0f;                   //카메라 회전 연산값 (위, 아래)
         private float rotationVelocity = 0f;                    //카메라 회전 속도 (좌, 우)
 
         [SerializeField] private float topClamp = 45f;          //카메라 위아래 최대값
-        [SerializeField] private float bottomClamp = -50f;      //카메라 위아래 최소값
+        [SerializeField] private float bottomClamp = -90f;      //카메라 위아래 최소값
         #endregion
 
-        #region Unity Events Method
+        #region Unity Event Method
         private void Awake()
         {
             //참조
             input = GetComponent<CharacterInput>();
-        }
-
-        private void OnEnable()
-        {
-            // 활성화될 때 현재 트랜스폼 회전값으로 초기화
-            cameraTargetPitch = 0f;
-            transform.rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
-            cameraRoot.localRotation = Quaternion.identity;
         }
 
         private void Start()
@@ -58,7 +49,7 @@ namespace MyFps
         void CameraRotate()
         {
             //입력값 체크
-            if (input.Look.sqrMagnitude < 0.01f) 
+            if(input.Look.sqrMagnitude < 0.01f)
                 return;
 
             //좌우(플레이어의 트랜스폼을 회전)
@@ -69,6 +60,7 @@ namespace MyFps
             cameraTargetPitch -= input.Look.y * rotationSpeed * Time.deltaTime * sensivity;
             cameraTargetPitch = ClampAngle(cameraTargetPitch, bottomClamp, topClamp);
             cameraRoot.localRotation = Quaternion.Euler(cameraTargetPitch, 0f, 0f);
+
         }
 
         private float ClampAngle(float angle, float min, float max)

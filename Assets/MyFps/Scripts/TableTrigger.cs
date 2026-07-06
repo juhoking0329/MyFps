@@ -42,7 +42,7 @@ namespace MyFps
 
         private void OnTriggerEnter(Collider other)
         {
-            Debug.Log("트리거 감지: " + other.gameObject.name); // 추가
+            //Debug.Log("트리거 감지: " + other.gameObject.name);
 
             //플레이어가 트리거에 들어왔을 때 && 한번만 작동
             if (other.CompareTag("Player") && !isTriggered)

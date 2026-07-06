@@ -3,12 +3,13 @@ using UnityEngine;
 namespace MyFps
 {
     /// <summary>
-    /// 플레이어 정면에 있는 오브젝트와의 거리 구하기
+    /// 플레이어 정면에 있는 오브젝트와 오브젝트와의 거리 구하기 : RayCasting
     /// </summary>
     public class PlayerCasting : MonoBehaviour
     {
         #region Variables
-        private static float distanceFromTarget = 0;
+        private static GameObject castGameObject;       //캐스팅 오브젝트
+        private static float distanceFromTarget = 0;    //캐스팅 거리        
         private float castingDistance = 100f;
 
         //디버깅
@@ -16,20 +17,27 @@ namespace MyFps
         #endregion
 
         #region Property
+        public static GameObject CastGameObject => castGameObject;
         public static float DistanceFromTarget => distanceFromTarget;
         #endregion
 
         #region Unity Event Method
         private void Update()
         {
-            //충돌체 오브젝트와 거리 구하기
+            //충돌체 오브젝트와의 거리 구하기
             RaycastHit hit;
-            if(Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit,
+            if (Physics.Raycast(transform.position, transform.forward, out hit,
                 castingDistance))
             {
                 //Debug.Log($"hit Object : {hit.collider.gameObject.name}");
                 distanceFromTarget = hit.distance;
                 toTarget = distanceFromTarget;
+
+                castGameObject = hit.collider.gameObject;
+            }
+            else
+            {
+                castGameObject = null;
             }
         }
 
@@ -37,7 +45,7 @@ namespace MyFps
         private void OnDrawGizmosSelected()
         {
             RaycastHit hit;
-            bool isHit = Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit,
+            bool isHit = Physics.Raycast(transform.position, transform.forward, out hit,
                 castingDistance);
 
             Gizmos.color = Color.red;
