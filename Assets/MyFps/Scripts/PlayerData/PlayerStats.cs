@@ -11,10 +11,19 @@ namespace MyFps
         [Header("Player Ammunition")]
         [SerializeField]
         private int ammoCount;
+
+        [Header("Player Inventory")]
+        [SerializeField]
+        private bool hasHeartKey = false;
         #endregion
 
         #region Properties
         public int AmmoCount => ammoCount;
+        public bool HasHeartKey
+        {
+            get => hasHeartKey;
+            set => hasHeartKey = value;
+        }
         #endregion
 
         #region Unity Event Methods

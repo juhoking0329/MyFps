@@ -81,6 +81,13 @@ MonoBehaviour:
     loop: 0
     playOnAwake: 0
     audioSource: {fileID: 0}
+  - name: BGM01
+    clip: {fileID: 8300000, guid: f580cc5b1c335bd49b3156a71ae24029, type: 3}
+    volume: 0.5
+    pitch: 1
+    loop: 1
+    playOnAwake: 0
+    audioSource: {fileID: 0}
   bgmSound: 
 --- !u!82 &2322965421098072589
 AudioSource:

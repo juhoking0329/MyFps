@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3613753648313706070}
   - component: {fileID: 113185460503603048}
+  - component: {fileID: 2760234642731836759}
   m_Layer: 0
   m_Name: TwoDoor
   m_TagString: Untagged
@@ -58,6 +59,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2760234642731836759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8141754026062223109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c4540d8c0beddb4796caca6e6019785, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MyFps.Door
 --- !u!1001 &77069364186678848
 PrefabInstance:
   m_ObjectHideFlags: 0

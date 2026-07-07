@@ -44,4 +44,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26e18e4fe32e51b4984488ad31b2a6a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MyFps.PlayerStats
-  ammoCount: 0
+  ammoCount: 12
