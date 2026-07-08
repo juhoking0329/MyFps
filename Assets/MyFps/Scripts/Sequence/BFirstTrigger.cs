@@ -14,35 +14,56 @@ namespace MyFps
         //연출        
         public TextMeshProUGUI sequenceText;
         public GameObject arrow;
-
         public AudioSource line03;
+
+        //페이드
+        [SerializeField] private float textFadeOutDuration = 1f;    //텍스트 페이드아웃 시간
         #endregion
 
         #region Custom Method
         protected override IEnumerator SequencePlay(GameObject player)
         {
-            //-플레이 캐릭터 비활성화(플레이 멈춤)
-            //-대사 출력 및 음성 재생: "Looks like a weapon on that table."
-            //- 1초 딜레이
-            //-화살표 활성화
-            //- 1초 딜레이
-            //-플레이 캐릭터 활성화(다시 플레이)            
-
+            //플레이어 비활성화
             player.SetActive(false);
 
+            //대사 출력 및 음성 재생
             sequenceText.gameObject.SetActive(true);
-            sequenceText.text = "Looks like a weapon on that table";
+            sequenceText.text = "Looks like a weapon on that table.";
             line03.Play();
-            yield return new WaitForSeconds(1f);
 
+            //음성 길이만큼 대기
+            yield return new WaitForSeconds(line03.clip.length);
+
+            //화살표 활성화
             arrow.SetActive(true);
             yield return new WaitForSeconds(1f);
-            sequenceText.gameObject.SetActive(false);
-            sequenceText.text = "";
 
+            //텍스트 페이드아웃
+            yield return StartCoroutine(FadeOutText());
+
+            //플레이어 활성화
             player.SetActive(true);
         }
-        #endregion
 
+        IEnumerator FadeOutText()
+        {
+            //텍스트 알파값 1 -> 0으로 서서히 숨김
+            float timer = 0f;
+            Color color = sequenceText.color;
+
+            while (timer < textFadeOutDuration)
+            {
+                timer += Time.deltaTime;
+                color.a = Mathf.Lerp(1f, 0f, timer / textFadeOutDuration);
+                sequenceText.color = color;
+                yield return null;
+            }
+
+            //완전히 숨김
+            sequenceText.gameObject.SetActive(false);
+            color.a = 1f;
+            sequenceText.color = color;
+        }
+        #endregion
     }
 }

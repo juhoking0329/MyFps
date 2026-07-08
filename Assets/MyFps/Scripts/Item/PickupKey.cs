@@ -20,9 +20,12 @@ namespace MyFps
         #endregion
 
         #region Unity Event Methods
-        private void Update()
+        protected override void Update()
         {
-            //00 매 프레임마다 노란 불빛을 서서히 반짝이게 연출
+            //00 부모 클래스의 Update (회전 및 위아래 둥둥 뜨기) 실행
+            base.Update();
+
+            //01 매 프레임마다 노란 불빛을 반짝이게 연출
             FlashLight();
         }
         #endregion
@@ -43,9 +46,9 @@ namespace MyFps
         {
             if (keyLight == null) return;
 
-            // PingPong을 사용해 최소/최대 밝기 사이를 왕복
-            float lerp = Mathf.PingPong(Time.time * flashSpeed, 1f);
-            keyLight.intensity = Mathf.Lerp(minIntensity, maxIntensity, lerp);
+            //00 삼각함수나 보간 대신 정수형 나눗셈 % 연산(Square Wave)으로 켜지고 꺼지는 깜빡임 구현
+            bool isOn = (Mathf.FloorToInt(Time.time * flashSpeed) % 2) == 0;
+            keyLight.intensity = isOn ? maxIntensity : minIntensity;
         }
         #endregion
     }

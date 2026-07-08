@@ -18,6 +18,7 @@ namespace MyFps
         [SerializeField] private GameObject player;             //플레이어 오브젝트
         [SerializeField] private GameObject arrow;              //화살표 오브젝트
         [SerializeField] private TextMeshProUGUI dialogueText;  //대사 텍스트
+        [SerializeField] private AudioSource line03;
 
         //트리거
         [Header("트리거")]
@@ -64,6 +65,10 @@ namespace MyFps
             dialogueText.text = dialogueMessage;
             dialogueText.gameObject.SetActive(true);
             SetTextAlpha(1f);
+
+            //2-1. line03 재생 추가
+            if (line03 != null)
+                line03.Play();
 
             //3. 딜레이
             yield return new WaitForSeconds(dialogueDelay);

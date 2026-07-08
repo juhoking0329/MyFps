@@ -26,6 +26,8 @@ namespace MyFps
         private bool isFadeIn = false;     //시작시 페이드 효과를 자동으로 적용할지 여부
         [SerializeField] 
         private float delayTime = 0f;      //페이더 시작전 딜레이 타임
+        [SerializeField] 
+        private float fadeDuration = 3f;   // 페이드 지속 시간
         #endregion
 
         #region Unity Event Methods
@@ -73,7 +75,7 @@ namespace MyFps
             //02-3 시간을 거꾸로 줄여가며 페이드 인 효과 연출
             while(t > 0f)
             {
-                t -= Time.deltaTime;
+                t -= Time.deltaTime / fadeDuration;  // fadeDuration으로 나눠서 속도 조절
                 float a = curve.Evaluate(t);    // 커브값에 따라 알파값 점차 감소
                 img.color = new Color(0f, 0f, 0f, a);
 

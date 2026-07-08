@@ -46,6 +46,10 @@ namespace MyFps
 
         //애니메이션 파라미터
         private const string enemyState = "EnemyState";
+
+        [Header("Audio")]
+        [SerializeField] private AudioSource jumpScareBgm;
+        [SerializeField] private AudioSource normalBgm;
         #endregion
 
         #region Unity Event Method
@@ -65,6 +69,19 @@ namespace MyFps
             //초기화
             ChangeState(RobotState.R_Idle);
             currentHealth = maxHealth;
+
+            //00 오디오 소스 자동 매핑 (미할당 시)
+            if (jumpScareBgm == null)
+            {
+                GameObject jsGo = GameObject.Find("JumpScare");
+                if (jsGo != null) jumpScareBgm = jsGo.GetComponent<AudioSource>();
+            }
+            if (normalBgm == null)
+            {
+                GameObject shGo = GameObject.Find("SHAmb");
+                if (shGo != null) normalBgm = shGo.GetComponent<AudioSource>();
+            }
+
         }
 
         private void Update()
@@ -203,6 +220,15 @@ namespace MyFps
             isDeath = true;
 
             //죽음 처리 (VFX, SFX, 보상처리)
+            //00 배경음 복원 (JumpScare 정지, Normal BGM 재생)
+            if (jumpScareBgm != null)
+            {
+                jumpScareBgm.Stop();
+            }
+            if (normalBgm != null)
+            {
+                normalBgm.Play();
+            }
 
             //상태 변경
             ChangeState(RobotState.R_Death);

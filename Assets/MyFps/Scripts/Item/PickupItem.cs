@@ -33,7 +33,7 @@ namespace MyFps
             startPosition = transform.position;
         }
 
-        private void Update()
+        protected virtual void Update()
         {
             //00 매 프레임마다 아이템을 회전시키고 위아래로 움직임
             FloatAndRotate();

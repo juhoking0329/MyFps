@@ -21,10 +21,28 @@ namespace MyFps
         #endregion
 
         #region Unity Event Method
+        private void OnEnable()
+        {
+            //00 입력 액션 활성화
+            if (pausedAction != null && pausedAction.action != null)
+            {
+                pausedAction.action.Enable();
+            }
+        }
+
+        private void OnDisable()
+        {
+            //00 입력 액션 비활성화
+            if (pausedAction != null && pausedAction.action != null)
+            {
+                pausedAction.action.Disable();
+            }
+        }
+
         private void Update()
         {
-            //인풋
-            if(pausedAction.action.WasPressedThisFrame())
+            //01 Pause 입력 감지 및 토글 처리
+            if (pausedAction != null && pausedAction.action != null && pausedAction.action.WasPressedThisFrame())
             {
                 Toggle();
             }

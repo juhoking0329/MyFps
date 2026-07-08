@@ -29,7 +29,22 @@ namespace MyFps
             //- 다음씬(PlayScene02)으로 이동
 
             twoDoorAnimator.SetBool(isOpen, true);
-            jumpScare.Stop();
+            
+            //00 배경음 정지 (JumpScare 및 일반 BGM 정지)
+            if (jumpScare != null)
+            {
+                jumpScare.Stop();
+            }
+
+            GameObject shGo = GameObject.Find("SHAmb");
+            if (shGo != null)
+            {
+                AudioSource normalBgm = shGo.GetComponent<AudioSource>();
+                if (normalBgm != null)
+                {
+                    normalBgm.Stop();
+                }
+            }
 
             //씬 클리어 처리...
 
