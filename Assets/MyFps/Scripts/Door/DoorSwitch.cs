@@ -4,6 +4,14 @@ using System.Collections;
 
 namespace MyFps
 {
+    public enum UnlockRequirement
+    {
+        None,
+        HeartKey1,
+        HeartKey2,
+        TwoEyes
+    }
+
     /// <summary>
     /// 문 스위치 구현, 인터렉트 구현
     /// 문 스위치는 토글, 문이 열려 있으면 빨간색, 문이 닫혀 있으면 원래색
@@ -12,6 +20,9 @@ namespace MyFps
     {
         #region Variables
         [Header("Door Target")]
+        [SerializeField]
+        private UnlockRequirement unlockRequirement = UnlockRequirement.HeartKey1; // 기본 열쇠1 요구
+
         [SerializeField]
         private Door targetDoor;            // 제어할 문 컴포넌트
 
@@ -64,7 +75,7 @@ namespace MyFps
             if (targetDoor.IsOperating) return;
 
             //01-2 열쇠 보유 상태 검사
-            if (targetDoor.IsLocked && !PlayerStats.Instance.HasHeartKey)
+            if (targetDoor.IsLocked && !IsRequirementMet())
             {
                 // 열쇠 없음 -> 실패 처리
                 PlayLockedAction();
@@ -77,6 +88,18 @@ namespace MyFps
                     targetDoor.IsLocked = false;
                 }
                 PlaySuccessAction();
+            }
+        }
+
+        // 조건 검사 헬퍼 함수
+        private bool IsRequirementMet()
+        {
+            switch (unlockRequirement)
+            {
+                case UnlockRequirement.HeartKey1: return PlayerStats.Instance.HasHeartKey1;
+                case UnlockRequirement.HeartKey2: return PlayerStats.Instance.HasHeartKey2;
+                case UnlockRequirement.TwoEyes: return PlayerStats.Instance.IsPuzzleSolved;
+                default: return true;
             }
         }
 
@@ -94,7 +117,14 @@ namespace MyFps
             {
                 StopCoroutine(subtitleCoroutine);
             }
-            subtitleCoroutine = StartCoroutine(ShowSubtitle("You need Key", 2f));
+
+            string message = "You need Key";
+            if (unlockRequirement == UnlockRequirement.TwoEyes)
+            {
+                message = "You must solve the puzzle";
+            }
+
+            subtitleCoroutine = StartCoroutine(ShowSubtitle(message, 2f));
         }
 
         //03 문 열기 성공 및 토글 액션 처리
@@ -102,11 +132,22 @@ namespace MyFps
         {
             targetDoor.ToggleDoor();
 
-            // 문 상태에 맞춰 스위치 불빛 색상 변경
-            SetSwitchColor(targetDoor.IsOpen);
+            // 동일한 targetDoor를 가리키는 모든 스위치 동기화
+            DoorSwitch[] switches = FindObjectsOfType<DoorSwitch>();
+            foreach (var s in switches)
+            {
+                if (s.targetDoor == this.targetDoor)
+                {
+                    s.SyncSwitchState(targetDoor.IsOpen);
+                }
+            }
+        }
 
-            //03-1 문 개폐 상태에 따라 안내 액션 텍스트 동적 갱신
-            action = targetDoor.IsOpen ? "Close Door" : "Open Door";
+        // 외부에서 스위치 상태 동기화를 위해 호출되는 메서드
+        public void SyncSwitchState(bool isOpen)
+        {
+            SetSwitchColor(isOpen);
+            action = isOpen ? "Close Door" : "Open Door";
             if (actionText != null && actionUI != null && actionUI.activeSelf)
             {
                 actionText.text = action;

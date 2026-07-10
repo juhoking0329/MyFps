@@ -1,5 +1,6 @@
 using UnityEditor.Search;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace MyFps
 {
@@ -18,6 +19,10 @@ namespace MyFps
         [SerializeField] private float walkSpeed = 4f;      //걷는 속도
         [SerializeField] private float sprintSpeed = 7f;    //뛰는 속도
         private float moveSpeed;                            //이동 속도
+
+        [Header("Spectator Mode")]
+        private bool isNoclip = false;                      //관전자 모드 상태
+        private SphereCollider noclipCollider;              //관전자 모드용 트리거 콜라이더
 
         //그라운드 체크
         [Header("Ground Check")]
@@ -47,6 +52,33 @@ namespace MyFps
 
         private void Update()
         {
+            // L키로 관전자(Noclip) 모드 토글
+            if (Keyboard.current != null && Keyboard.current.lKey.wasPressedThisFrame)
+            {
+                isNoclip = !isNoclip;
+                
+                // CharacterController 비활성화하여 벽 통과 가능하게 함
+                controller.enabled = !isNoclip; 
+                
+                // 관전자 모드일 때 트리거 상호작용(아이템 획득 등)을 유지하기 위해 가상의 트리거 콜라이더 사용
+                if (noclipCollider == null)
+                {
+                    noclipCollider = gameObject.AddComponent<SphereCollider>();
+                    noclipCollider.isTrigger = true;
+                    noclipCollider.radius = controller.radius;
+                    noclipCollider.center = controller.center;
+                }
+                noclipCollider.enabled = isNoclip;
+
+                Debug.Log("Spectator (Noclip) Mode: " + (isNoclip ? "ON" : "OFF"));
+            }
+
+            if (isNoclip)
+            {
+                NoclipMove();
+                return;
+            }
+
             //그라운드 체크
             CheckGrounded();
 
@@ -124,6 +156,33 @@ namespace MyFps
             //이동 : 방향(앞뒤좌우) * Time.deltatime * speed + (위아래) * Time.deltatime * verticalVelocity
             controller.Move(inputDirection * Time.deltaTime * moveSpeed
                 + Vector3.up * Time.deltaTime * verticalVelocity);
+        }
+
+        // 관전자 모드 이동 (카메라 시선 방향 기준)
+        void NoclipMove()
+        {
+            float speed = input.IsSprint ? sprintSpeed * 3f : walkSpeed * 3f;
+            Vector3 dir = Vector3.zero;
+
+            // 메인 카메라 시선 방향
+            Transform camTransform = Camera.main.transform;
+            
+            if (input.Move != Vector2.zero)
+            {
+                dir = camTransform.right * input.Move.x + camTransform.forward * input.Move.y;
+            }
+
+            // Q/E 또는 Space/Ctrl로 위아래 조작 기능
+            if (Keyboard.current != null)
+            {
+                if (Keyboard.current.spaceKey.isPressed || Keyboard.current.eKey.isPressed)
+                    dir += Vector3.up;
+                if (Keyboard.current.leftCtrlKey.isPressed || Keyboard.current.qKey.isPressed)
+                    dir -= Vector3.up;
+            }
+
+            // 직접 transform 이동
+            transform.position += dir * speed * Time.deltaTime;
         }
         #endregion
 

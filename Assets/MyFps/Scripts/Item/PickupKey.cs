@@ -5,9 +5,19 @@ namespace MyFps
     /// <summary>
     /// 열쇠 획득용 클래스 - PickupItem 상속
     /// </summary>
+    public enum KeyType
+    {
+        HeartKey1,
+        HeartKey2
+    }
+
     public class PickupKey : PickupItem
     {
         #region Variables
+        [Header("Key Settings")]
+        [SerializeField]
+        private KeyType keyType = KeyType.HeartKey1; // 열쇠 타입 (1번인지 2번인지 구분)
+
         [Header("Light Flash Settings")]
         [SerializeField]
         private Light keyLight;                 // 반짝이게 할 노란색 라이트 컴포넌트
@@ -34,8 +44,17 @@ namespace MyFps
         protected override bool OnPickup()
         {
             //01 열쇠 습득 처리 및 로그 출력
-            Debug.Log("HeartKey를 획득하였습니다.");
-            PlayerStats.Instance.HasHeartKey = true;
+            if (keyType == KeyType.HeartKey1)
+            {
+                Debug.Log("HeartKey1를 획득하였습니다.");
+                PlayerStats.Instance.HasHeartKey1 = true;
+            }
+            else if (keyType == KeyType.HeartKey2)
+            {
+                Debug.Log("HeartKey2를 획득하였습니다.");
+                PlayerStats.Instance.HasHeartKey2 = true;
+            }
+            
             return true;
         }
         #endregion

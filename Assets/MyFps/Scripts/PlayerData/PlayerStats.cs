@@ -14,15 +14,48 @@ namespace MyFps
 
         [Header("Player Inventory")]
         [SerializeField]
-        private bool hasHeartKey = false;
+        private bool hasHeartKey1 = false;
+        [SerializeField]
+        private bool hasHeartKey2 = false;
+        [SerializeField]
+        private bool hasLeftEye = false;
+        [SerializeField]
+        private bool hasRightEye = false;
+        [SerializeField]
+        private bool isPuzzleSolved = false;
         #endregion
 
         #region Properties
         public int AmmoCount => ammoCount;
-        public bool HasHeartKey
+        
+        public bool HasHeartKey1
         {
-            get => hasHeartKey;
-            set => hasHeartKey = value;
+            get => hasHeartKey1;
+            set => hasHeartKey1 = value;
+        }
+
+        public bool HasHeartKey2
+        {
+            get => hasHeartKey2;
+            set => hasHeartKey2 = value;
+        }
+
+        public bool HasLeftEye
+        {
+            get => hasLeftEye;
+            set => hasLeftEye = value;
+        }
+
+        public bool HasRightEye
+        {
+            get => hasRightEye;
+            set => hasRightEye = value;
+        }
+
+        public bool IsPuzzleSolved
+        {
+            get => isPuzzleSolved;
+            set => isPuzzleSolved = value;
         }
         #endregion
 
