@@ -15,9 +15,11 @@ namespace MyFps
         //데미지 효과
         public GameObject damagedFlash;
 
-        public AudioSource hurt01;
-        public AudioSource hurt02;
-        public AudioSource hurt03;
+        [Header("Audio")]
+        public AudioSource playerAudio;
+        public AudioClip hurt01;
+        public AudioClip hurt02;
+        public AudioClip hurt03;
 
         //죽음 처리
         public GameObject gameOverUI;
@@ -39,6 +41,11 @@ namespace MyFps
             //데미지,죽음 이벤트에 함수 등록
             playerHealth.onDamaged += OnDamaged;
             playerHealth.onDie += OnDie;
+
+            if (playerAudio == null)
+            {
+                playerAudio = GetComponent<AudioSource>();
+            }
         }
 
         void OnDisable()
@@ -53,8 +60,14 @@ namespace MyFps
         //데미지 입을때 처리할 함수
         private void OnDamaged(float damage)
         {            
-            //데미지 효과 처리(VFX, SFX)
+            // 데미지 효과 처리(VFX, SFX)
             StartCoroutine(DamageEffect());
+
+            // 피격 시 카메라 흔들림 효과
+            if (CinemachineShake.Instance != null)
+            {
+                CinemachineShake.Instance.ShakeCamera();
+            }
         }
 
         //죽었을때 처리할 함수
@@ -71,18 +84,21 @@ namespace MyFps
             damagedFlash.SetActive(true);
 
             //데미지 사운드
-            int hurtNumber = Random.Range(1, 4);
-            if(hurtNumber == 1)
+            if (playerAudio != null)
             {
-                hurt01.Play();
-            }
-            else if (hurtNumber == 2)
-            {
-                hurt02.Play();
-            }
-            else
-            {
-                hurt03.Play();
+                int hurtNumber = Random.Range(1, 4);
+                if (hurtNumber == 1 && hurt01 != null)
+                {
+                    playerAudio.PlayOneShot(hurt01);
+                }
+                else if (hurtNumber == 2 && hurt02 != null)
+                {
+                    playerAudio.PlayOneShot(hurt02);
+                }
+                else if (hurtNumber == 3 && hurt03 != null)
+                {
+                    playerAudio.PlayOneShot(hurt03);
+                }
             }
 
             yield return new WaitForSeconds(1f);

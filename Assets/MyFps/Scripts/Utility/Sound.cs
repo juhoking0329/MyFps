@@ -2,6 +2,12 @@ using UnityEngine;
 
 namespace MyFps
 {
+    public enum SoundType
+    {
+        BGM,
+        SFX
+    }
+
     /// <summary>
     /// 사운드 데이터 속성 정의 클래스
     /// </summary>
@@ -11,6 +17,8 @@ namespace MyFps
         #region Variables
         [SerializeField]
         public string name;              // 사운드 이름
+
+        public SoundType soundType;      // 사운드 타입 (BGM / SFX)
 
         public AudioClip clip;           // 사운드 리소스 - 음원
 

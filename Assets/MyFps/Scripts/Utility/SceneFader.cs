@@ -102,7 +102,7 @@ namespace MyFps
             //05-1 시간을 증가시키며 페이드 아웃 효과 연출
             while (t < 1f)
             {
-                t += Time.deltaTime;
+                t += Time.deltaTime / fadeDuration;
                 float a = curve.Evaluate(t);    // 커브값에 따라 알파값 점차 증가
                 img.color = new Color(0f, 0f, 0f, a);
                 yield return 0;
@@ -122,7 +122,7 @@ namespace MyFps
             //06-1 시간을 증가시키며 페이드 아웃 효과 연출
             while (t < 1f)
             {
-                t += Time.deltaTime;
+                t += Time.deltaTime / fadeDuration;
                 float a = curve.Evaluate(t);    // 커브값에 따라 알파값 점차 증가
                 img.color = new Color(0f, 0f, 0f, a);
                 yield return 0;

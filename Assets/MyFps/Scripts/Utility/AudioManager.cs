@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace MyFps
 {
@@ -35,10 +36,45 @@ namespace MyFps
                 sound.audioSource.loop = sound.loop;
                 sound.audioSource.playOnAwake = sound.playOnAwake;
             }
+
+            LoadVolumeSettings();
         }
         #endregion
 
         #region Custom Methods
+        private void LoadVolumeSettings()
+        {
+            float bgmVol = PlayerPrefs.GetFloat("BGMVolume", 1f);
+            float sfxVol = PlayerPrefs.GetFloat("SFXVolume", 1f);
+
+            SetBgmVolume(bgmVol);
+            SetSfxVolume(sfxVol);
+        }
+
+        public void SetBgmVolume(float volume)
+        {
+            PlayerPrefs.SetFloat("BGMVolume", volume);
+            foreach (var sound in sounds)
+            {
+                if (sound != null && sound.audioSource != null && sound.soundType == SoundType.BGM)
+                {
+                    sound.audioSource.volume = sound.volume * volume;
+                }
+            }
+        }
+
+        public void SetSfxVolume(float volume)
+        {
+            PlayerPrefs.SetFloat("SFXVolume", volume);
+            foreach (var sound in sounds)
+            {
+                if (sound != null && sound.audioSource != null && sound.soundType == SoundType.SFX)
+                {
+                    sound.audioSource.volume = sound.volume * volume;
+                }
+            }
+        }
+
         //01 이름으로 원하는 사운드를 재생하는 함수
         public void Play(string name)
         {

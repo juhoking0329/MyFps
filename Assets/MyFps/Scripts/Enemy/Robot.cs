@@ -1,10 +1,9 @@
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace MyFps
 {
     /// <summary>
-    /// 로봇의 애니메이션 상태 및 기본 상태 정의
+    /// 로봇의 상태 정의
     /// </summary>
     public enum RobotState
     {
@@ -15,18 +14,8 @@ namespace MyFps
     }
 
     /// <summary>
-    /// AI 모드 정의 (순찰 중인지 추격 중인지 구분)
-    /// </summary>
-    public enum AIMode
-    {
-        Patrol,
-        Chase
-    }
-
-    /// <summary>
-    /// 로봇 적을 관리하는 클래스
+    /// 근접 로봇 적을 관리하는 클래스
     /// IDamageable 상속 받는다
-    /// NavMeshAgent를 이용해 이동
     /// </summary>
     public class Robot : MonoBehaviour, IDamageable
     {
@@ -35,36 +24,21 @@ namespace MyFps
         private Animator animator;
         private Transform thePlayer;
         private Player player;
-        private NavMeshAgent agent;
 
         //로봇의 상태 (enum)
         [SerializeField] private RobotState currentState;    //현재 상태
         private RobotState beforeState;     //현재 상태의 바로 이전 상태
-        
-        [SerializeField] private AIMode currentAIMode = AIMode.Patrol;
 
-        //이동 및 순찰
-        [Header("Patrol Settings")]
-        [SerializeField] private float moveSpeed = 3.5f;
-        public Vector3[] waypoints = new Vector3[] { 
-            new Vector3(-8f, 0f, 17.5f), 
-            new Vector3(-8f, 0f, 52.5f), 
-            new Vector3(-27.5f, 0f, 52.5f) 
-        };
-        private int currentWaypointIndex = 0;
-        private float waitTimer = 0f;
-        private bool isWaiting = false;
-        private const string isFiring = "IsFiring";
+        //이동
+        [SerializeField] private float moveSpeed = 2f;
 
-        //추격 및 공격
-        [Header("Combat Settings")]
-        [SerializeField] private float chaseRange = 15f;    // 추격 시작 거리
-        [SerializeField] private float loseTargetRange = 20f; // 추격 포기 거리 (Enemy 구역 이탈 기준)
-        [SerializeField] private float attakRange = 2f;     //공격 범위
+        //공격
+        [SerializeField] private float attakRange = 1.5f;   //공격 범위
         [SerializeField] private float attackDamage = 5f;   //공격력
+        [SerializeField] private float attackDelay = 1.5f;  //공격 주기
+        private float attackTimer = 0f;
 
         //체력
-        [Header("Health Settings")]
         [SerializeField] private float maxHealth = 20f;
         private float currentHealth = 0f;
         private bool isDeath = false;       //죽음 체크
@@ -75,24 +49,13 @@ namespace MyFps
         [Header("Audio")]
         [SerializeField] private AudioSource jumpScareBgm;
         [SerializeField] private AudioSource normalBgm;
-
-        [Header("본 설정")]
-        [SerializeField] private Transform spineBone;   // 척추 본 드래그 연결
-        [SerializeField] private float aimSpeed = 5f;   // 조준 속도
         #endregion
 
         #region Unity Event Method
         private void Awake()
         {
+            //참조
             animator = GetComponent<Animator>();
-            agent = GetComponent<NavMeshAgent>();
-            
-            // NavMeshAgent가 없으면 동적으로 추가
-            if (agent == null)
-            {
-                agent = gameObject.AddComponent<NavMeshAgent>();
-            }
-
             player = FindFirstObjectByType<Player>();
             if (player != null)
             {
@@ -103,14 +66,10 @@ namespace MyFps
         private void Start()
         {
             //초기화
-            agent.speed = moveSpeed;
-            agent.stoppingDistance = attakRange - 0.5f;
-
-            currentAIMode = AIMode.Patrol;
-            ChangeState(RobotState.R_Walk); // 순찰 시작
+            ChangeState(RobotState.R_Idle);
             currentHealth = maxHealth;
 
-            // 오디오 소스 자동 매핑 (미할당 시)
+            //오디오 소스 자동 매핑 (미할당 시)
             if (jumpScareBgm == null)
             {
                 GameObject jsGo = GameObject.Find("JumpScare");
@@ -121,190 +80,130 @@ namespace MyFps
                 GameObject shGo = GameObject.Find("SHAmb");
                 if (shGo != null) normalBgm = shGo.GetComponent<AudioSource>();
             }
-            
-            // 첫 웨이포인트 목적지 설정
-            if (waypoints.Length > 0)
-            {
-                agent.SetDestination(waypoints[currentWaypointIndex]);
-            }
+
         }
 
         private void Update()
         {
-            if (isDeath) return;
+            //적의 죽음 체크
+            if(isDeath)
+            {
+                return;
+            }
 
-            if (thePlayer == null)
+            //타겟 체크
+            if(thePlayer == null)
             {
                 player = FindFirstObjectByType<Player>();
-                if (player != null) thePlayer = player.transform;
-                return;
-            }
-
-            if (player.IsDeath) return;
-
-            float distanceToPlayer = Vector3.Distance(thePlayer.position, transform.position);
-
-            // 상태 및 AI 모드 업데이트 로직
-            UpdateAI(distanceToPlayer);
-
-            // 현재 상태별 로직 실행
-            ExecuteStateLogic(distanceToPlayer);
-        }
-
-        private void LateUpdate()
-        {
-            if (isDeath) return;
-            if (currentState != RobotState.R_Attack) return;
-            if (thePlayer == null) return;
-            if (spineBone == null) return;
-
-            // 척추 본을 플레이어 방향으로 회전
-            Vector3 direction = thePlayer.position - spineBone.position;
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-            spineBone.rotation = Quaternion.Slerp(spineBone.rotation, targetRotation, Time.deltaTime * aimSpeed);
-        }
-        #endregion
-
-        #region AI Logic
-        private void UpdateAI(float distanceToPlayer)
-        {
-            // 공격 중이라면 시선 고정
-            if (currentState == RobotState.R_Attack)
-            {
-                if (distanceToPlayer > attakRange)
+                if (player != null)
                 {
-                    // 거리가 벌어지면 다시 추격
-                    ChangeState(RobotState.R_Walk);
-                    currentAIMode = AIMode.Chase;
+                    thePlayer = player.transform;
                 }
                 return;
             }
 
-            // 순찰 모드에서 추격 모드로 전환
-            if (currentAIMode == AIMode.Patrol)
+            //플레이어 죽음 체크
+            if(player.IsDeath)
             {
-                if (distanceToPlayer <= chaseRange)
-                {
-                    currentAIMode = AIMode.Chase;
-                    isWaiting = false; // 대기 중단
-                    
-                    // 배경음 BGM 변경 로직 (JumpScare Play)
-                    if (normalBgm != null) normalBgm.Stop();
-                    if (jumpScareBgm != null && !jumpScareBgm.isPlaying) jumpScareBgm.Play();
-
-                    ChangeState(RobotState.R_Walk);
-                }
-            }
-            // 추격 모드에서 순찰 모드로 전환 (구역 이탈)
-            else if (currentAIMode == AIMode.Chase)
-            {
-                if (distanceToPlayer > loseTargetRange)
-                {
-                    currentAIMode = AIMode.Patrol;
-                    
-                    // 배경음 BGM 변경 로직 (Normal Play)
-                    if (jumpScareBgm != null) jumpScareBgm.Stop();
-                    if (normalBgm != null && !normalBgm.isPlaying) normalBgm.Play();
-                    
-                    // 순찰 웨이포인트로 목적지 재설정
-                    if (waypoints.Length > 0)
-                    {
-                        agent.SetDestination(waypoints[currentWaypointIndex]);
-                    }
-                    ChangeState(RobotState.R_Walk);
-                }
+                return;
             }
 
-            // 추격 중인데 공격 거리 안으로 들어오면
-            if (currentAIMode == AIMode.Chase && distanceToPlayer <= attakRange)
-            {
-                ChangeState(RobotState.R_Attack);
-            }
-        }
+            //타겟팅
+            Vector3 dir = thePlayer.position - transform.position;
+            dir.y = 0; // 높이 차이 무시
+            float distance = Vector3.Distance(thePlayer.position, transform.position);
 
-        private void ExecuteStateLogic(float distanceToPlayer)
-        {
-            switch (currentState)
+            //상태에 따른 구현
+            switch(currentState)
             {
                 case RobotState.R_Idle:
-                    if (currentAIMode == AIMode.Patrol && isWaiting)
+                    //플레이어가 공격 범위 안에 들어오면 공격 상태로 바꾼다
+                    if (distance <= attakRange)
                     {
-                        waitTimer -= Time.deltaTime;
-                        if (waitTimer <= 0f)
-                        {
-                            isWaiting = false;
-                            
-                            // 다음 웨이포인트 설정
-                            currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
-                            agent.SetDestination(waypoints[currentWaypointIndex]);
-                            ChangeState(RobotState.R_Walk);
-                        }
+                        ChangeState(RobotState.R_Attack);
                     }
                     break;
 
-                case RobotState.R_Walk:
-                    if (currentAIMode == AIMode.Patrol)
-                    {
-                        agent.isStopped = false;
-                        // 웨이포인트 도착 확인
-                        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
-                        {
-                            isWaiting = true;
-                            waitTimer = Random.Range(2f, 3f);
-                            agent.isStopped = true;
-                            ChangeState(RobotState.R_Idle);
-                        }
-                    }
-                    else if (currentAIMode == AIMode.Chase)
-                    {
-                        agent.isStopped = false;
-                        agent.SetDestination(thePlayer.position);
-                    }
-                    break;
-
-                case RobotState.R_Attack:
-                    agent.isStopped = true;
-                    // 플레이어 쳐다보기
+                case RobotState.R_Walk: //타겟(플레이어)를 향해 이동
+                    //방향 * Time.delatTime * moveSpeed
+                    transform.Translate(dir.normalized * Time.deltaTime * moveSpeed, Space.World);
+                    
+                    //타겟을 바라본다
                     Vector3 lookPos = thePlayer.position;
                     lookPos.y = transform.position.y;
-                    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookPos - transform.position), Time.deltaTime * 5f);
+                    transform.LookAt(lookPos);
+
+                    //플레이어가 공격 범위 안에 들어오면 공격 상태로 바꾼다
+                    if(distance <= attakRange)
+                    {
+                        ChangeState(RobotState.R_Attack);
+                    }
+                    break;
+
+                case RobotState.R_Attack:   //일정거리안에 들어오면 공격한다
+                    //타겟을 바라본다
+                    Vector3 attackLookPos = thePlayer.position;
+                    attackLookPos.y = transform.position.y;
+                    transform.LookAt(attackLookPos);
+
+                    //공격 타이머 진행 (애니메이션 이벤트가 없는 경우 대비)
+                    attackTimer += Time.deltaTime;
+                    if(attackTimer >= attackDelay)
+                    {
+                        Attack();
+                        attackTimer = 0f;
+                    }
+
+                    //공격중에 플레이어가 도망가면 다시 추격한다 (약간의 여유 마진 추가하여 버벅임 방지)
+                    if (distance > attakRange + 0.3f)
+                    {
+                        ChangeState(RobotState.R_Walk);
+                    }
+                    break;
+
+                case RobotState.R_Death:
                     break;
             }
         }
         #endregion
 
         #region Custom Method
+        //상태 변경 - 매개변수로 들어온 상태로 변경한다
         public void ChangeState(RobotState newState)
         {
+            //상태 변경전에 현재상태를 이전상태에 저장
             beforeState = currentState;
+
+            //새로운 상태로 변경
             currentState = newState;
 
-            //애니메이터 파라미터 업데이트
+            //새로운 상태변경에 따른 처리사항 구현
             animator.SetInteger(enemyState, (int)currentState);
 
-            // 공격 상태면 IsFiring true
-            if (newState == RobotState.R_Attack)
-                animator.SetBool(isFiring, true);
-            else
-                animator.SetBool(isFiring, false);
+            //공격 상태 진입 시 타이머 초기화 (첫 공격은 조금 더 빨리 나감)
+            if (currentState == RobotState.R_Attack)
+            {
+                attackTimer = attackDelay / 2f;
+            }
         }
 
-        // 애니메이션 이벤트에서 호출할 수 있는 공격 함수
+        //공격 (애니메이션 이벤트)
         public void Attack()
         {
             if (thePlayer == null || isDeath) return;
 
             float distance = Vector3.Distance(thePlayer.position, transform.position);
-            if (distance <= attakRange + 0.5f) // 공격 모션 중 약간 벗어나도 맞게 보정
+            if (distance <= attakRange + 0.5f) // 약간의 보정값
             {
                 IDamageable damageable = thePlayer.GetComponent<IDamageable>();
-                if (damageable != null)
+                if(damageable != null)
                 {
                     damageable.TakeDamage(attackDamage);
                 }
             }
         }
 
+        //데미지 입기
         public void TakeDamage(float damage)
         {
             if (isDeath) return;
@@ -312,31 +211,25 @@ namespace MyFps
             currentHealth -= damage;
             Debug.Log($"{gameObject.name} currentHealth: {currentHealth}");
 
-            // 데미지 효과 처리 (생략)
+            //데미지 효과 처리(VFX, SFX)
 
-            if (currentHealth <= 0f)
+            //죽음 체크
+            if(currentHealth <= 0f)
             {
                 Die();
             }
         }
 
+        //죽기
         void Die()
         {
             isDeath = true;
-            if (agent != null) agent.isStopped = true;
 
-            // NavMeshAgent 비활성화 (물리 충돌 정상화)
-            if (agent != null) agent.enabled = false;
-
-            // Rigidbody 추가해서 중력 적용
-            Rigidbody rb = gameObject.GetComponent<Rigidbody>();
-            if (rb == null)
-                rb = gameObject.AddComponent<Rigidbody>();
-            rb.isKinematic = false;
-
+            //배경음 복원
             if (jumpScareBgm != null) jumpScareBgm.Stop();
             if (normalBgm != null && !normalBgm.isPlaying) normalBgm.Play();
 
+            //상태 변경
             ChangeState(RobotState.R_Death);
         }
         #endregion

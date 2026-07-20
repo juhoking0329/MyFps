@@ -64,6 +64,10 @@ namespace MyFps
             {
                 thePlayer.SetActive(true);
             }
+
+            // 확실하게 한 번 더 잠금 처리
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
         #endregion
     }

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - CinemachineTarget
   - Enemy
+  - Play
   layers:
   - Default
   - TransparentFX
@@ -17,7 +18,7 @@ TagManager:
   - Door
   - Trigger
   - Pistol
-  - 
+  - Weapon
   - 
   - 
   - 

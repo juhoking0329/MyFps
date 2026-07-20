@@ -12,6 +12,11 @@ namespace MyFps
         [Header("Scene Settings")]
         [SerializeField] 
         private string loadSceneName = "PlayScene01";
+
+        [Header("UI Panels")]
+        public GameObject mainMenuUI;
+        public GameObject optionsUI;
+        public CreditsMenu creditsMenu;
         #endregion
 
         #region Unity Event Methods
@@ -54,10 +59,11 @@ namespace MyFps
         {
             //03-1 버튼 클릭 사운드 재생 및 로그 출력
             Debug.Log("Options Button Clicked");
-            AudioManager.Instance.Play("MenuButton");
+            if (AudioManager.Instance != null) AudioManager.Instance.Play("MenuButton");
 
-            //03-2 배경음 변경 기능 테스트 (MenuBgm -> Hurt01)
-            AudioManager.Instance.PlayBGM("Hurt01");
+            //03-2 옵션 UI 표시
+            if (mainMenuUI != null) mainMenuUI.SetActive(false);
+            if (optionsUI != null) optionsUI.SetActive(true);
         }
 
         //04 크레딧 메뉴 열기
@@ -65,7 +71,16 @@ namespace MyFps
         {
             //04-1 버튼 클릭 사운드 재생 및 로그 출력
             Debug.Log("Credits Button Clicked");
-            AudioManager.Instance.Play("MenuButton");
+            if (AudioManager.Instance != null) AudioManager.Instance.Play("MenuButton");
+
+            if (creditsMenu != null)
+            {
+                creditsMenu.OpenCredits();
+            }
+            else
+            {
+                Debug.LogWarning("CreditsMenu is not assigned in MainMenu.");
+            }
         }
 
         //05 게임 종료
