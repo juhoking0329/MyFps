@@ -43,9 +43,9 @@ namespace MyFps
         public void Exit()
         {
             fader.FadeTo(loadToScene);
-            
+
             // 페이드 아웃 중 카메라가 돌아가는 현상을 막기 위해 시네머신 브레인 비활성화 (현재 방향 고정)
-            var brain = FindObjectOfType<Camera>()?.GetComponent("CinemachineBrain") as MonoBehaviour;
+            var brain = FindFirstObjectByType<Camera>()?.GetComponent("CinemachineBrain") as MonoBehaviour;
             if (brain != null)
             {
                 brain.enabled = false;

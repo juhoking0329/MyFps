@@ -263,9 +263,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player
   damagedFlash: {fileID: 0}
   playerAudio: {fileID: 0}
-  hurt01: {fileID: 0}
-  hurt02: {fileID: 0}
-  hurt03: {fileID: 0}
+  hurt01: {fileID: 8300000, guid: bfadbe07460505e43b015c75c816ac7f, type: 3}
+  hurt02: {fileID: 8300000, guid: 4c4215bd3b95a524c839389846c28e16, type: 3}
+  hurt03: {fileID: 8300000, guid: bb473b4c924385a4ca3d4a6a85711a73, type: 3}
   gameOverUI: {fileID: 0}
 --- !u!114 &6445985030868679436
 MonoBehaviour:

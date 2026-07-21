@@ -38,7 +38,7 @@ namespace MyFps
                     creditsTextRect.anchoredPosition += Vector2.up * scrollSpeed * Time.deltaTime;
                 }
 
-                // 아무 키나 누르면 메인 메뉴로 복귀 (Esc 포함)
+                // Esc키 누르면 메인 메뉴로 복귀
                 if (Keyboard.current.escapeKey.wasPressedThisFrame)
                 {
                     CloseCredits();

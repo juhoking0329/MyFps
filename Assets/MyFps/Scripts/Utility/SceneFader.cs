@@ -34,11 +34,8 @@ namespace MyFps
         // 싱글톤 인스턴스 등록 추가
         private void Awake()
         {
-            //00 싱글톤 인스턴스 설정
-            if (instance == null)
-                instance = this;
-            else
-                Destroy(gameObject);
+            //00 싱글톤 인스턴스 설정 (항상 덮어쓰기하여 파괴된 객체 참조 방지)
+            instance = this;
         }
 
         private void Start()

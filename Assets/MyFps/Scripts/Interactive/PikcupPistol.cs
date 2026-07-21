@@ -30,6 +30,11 @@ namespace MyFps
             realPistol.SetActive(true);
             ammoUI.SetActive(true);
 
+            if (PlayerStats.Instance != null)
+            {
+                PlayerStats.Instance.HasPistol = true;
+            }
+
             //arrow.SetActive(false);
             //this.gameObject.SetActive(false); //fakePistol
             //castCollider.enabled = false;

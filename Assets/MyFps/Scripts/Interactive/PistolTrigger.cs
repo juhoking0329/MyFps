@@ -143,8 +143,25 @@ namespace MyFps
             //팔 역할 Gun 비활성화
             gun.SetActive(false);
 
-            //손 위 권총 활성화
+            //진짜 권총 활성화
             realPistol.SetActive(true); 
+
+            // UI 텍스트 업데이트용 플래그 켜기
+            if (PlayerStats.Instance != null)
+            {
+                PlayerStats.Instance.HasPistol = true;
+            }
+            
+            // 만약 씬 파일에 비활성화 저장되어 있다면 켜주기 (부모인 AmmoUI도 확인)
+            DrawAmmoCount ammoCountUI = Object.FindFirstObjectByType<DrawAmmoCount>(FindObjectsInactive.Include);
+            if (ammoCountUI != null)
+            {
+                if (ammoCountUI.transform.parent != null && ammoCountUI.transform.parent.name == "AmmoUI")
+                {
+                    ammoCountUI.transform.parent.gameObject.SetActive(true);
+                }
+                ammoCountUI.gameObject.SetActive(true);
+            }
 
             //화살표 비활성화
             if (arrow != null)

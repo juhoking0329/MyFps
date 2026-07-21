@@ -47,6 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MyFps.AudioManager
   sounds:
   - name: MenuBgm
+    soundType: 0
     clip: {fileID: 8300000, guid: f3351e6c748fd6243baf03584e0a8e78, type: 3}
     volume: 0.25
     pitch: 1
@@ -54,6 +55,7 @@ MonoBehaviour:
     playOnAwake: 0
     audioSource: {fileID: 0}
   - name: MenuButton
+    soundType: 0
     clip: {fileID: 8300000, guid: 7d5b0a00810c84d4b944d0e561e48258, type: 3}
     volume: 0.7
     pitch: 1
@@ -61,6 +63,7 @@ MonoBehaviour:
     playOnAwake: 0
     audioSource: {fileID: 0}
   - name: Hurt01
+    soundType: 0
     clip: {fileID: 8300000, guid: bfadbe07460505e43b015c75c816ac7f, type: 3}
     volume: 1
     pitch: 1
@@ -68,6 +71,7 @@ MonoBehaviour:
     playOnAwake: 0
     audioSource: {fileID: 0}
   - name: Hurt02
+    soundType: 0
     clip: {fileID: 8300000, guid: 4c4215bd3b95a524c839389846c28e16, type: 3}
     volume: 1
     pitch: 1
@@ -75,13 +79,15 @@ MonoBehaviour:
     playOnAwake: 0
     audioSource: {fileID: 0}
   - name: Hurt03
+    soundType: 0
     clip: {fileID: 8300000, guid: bb473b4c924385a4ca3d4a6a85711a73, type: 3}
     volume: 1
     pitch: 1
     loop: 0
     playOnAwake: 0
     audioSource: {fileID: 0}
-  - name: SHAmb
+  - name: BGM01
+    soundType: 0
     clip: {fileID: 8300000, guid: f580cc5b1c335bd49b3156a71ae24029, type: 3}
     volume: 0.5
     pitch: 1
@@ -89,6 +95,7 @@ MonoBehaviour:
     playOnAwake: 0
     audioSource: {fileID: 0}
   - name: IntroBgm
+    soundType: 0
     clip: {fileID: 8300000, guid: 7d57b46d6cc3dd4429da47b11977bbae, type: 3}
     volume: 1
     pitch: 1

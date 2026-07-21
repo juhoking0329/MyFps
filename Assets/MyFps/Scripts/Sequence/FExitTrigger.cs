@@ -22,9 +22,7 @@ namespace MyFps
         #region Unity Event Method
         private void Start()
         {
-            //마우스 커서 초기화
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            // 커서 초기화 로직은 MainMenu로 위임함
         }
 
         #endregion

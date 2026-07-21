@@ -133,7 +133,7 @@ namespace MyFps
             targetDoor.ToggleDoor();
 
             // 동일한 targetDoor를 가리키는 모든 스위치 동기화
-            DoorSwitch[] switches = FindObjectsOfType<DoorSwitch>();
+            DoorSwitch[] switches = FindObjectsByType<DoorSwitch>(FindObjectsSortMode.None);
             foreach (var s in switches)
             {
                 if (s.targetDoor == this.targetDoor)

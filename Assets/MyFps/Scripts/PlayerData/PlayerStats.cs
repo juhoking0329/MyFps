@@ -23,6 +23,8 @@ namespace MyFps
         private bool hasRightEye = false;
         [SerializeField]
         private bool isPuzzleSolved = false;
+
+        public bool HasPistol { get; set; } = false;
         #endregion
 
         #region Properties
@@ -62,7 +64,19 @@ namespace MyFps
         #region Unity Event Methods
         private void Start()
         {
-            //00 플레이어 탄량 초기화 (인스펙터에 설정된 초기 값을 유지하기 위해 0 이하일 때만 초기화)
+            // 새 게임 또는 로드 데이터 적용
+            if (SaveLoadManager.isNewGame)
+            {
+                ResetStats();
+                SaveLoadManager.isNewGame = false;
+            }
+            else if (SaveLoadManager.pendingLoadData != null)
+            {
+                LoadAmmo(SaveLoadManager.pendingLoadData.savedAmmoCount);
+                SaveLoadManager.pendingLoadData = null;
+            }
+
+            //00 탄량 초기화 (인스펙터에 설정된 초기 값을 유지하되 0 이하일때만 초기화)
             if (ammoCount <= 0)
             {
                 ammoCount = 0;
@@ -88,6 +102,24 @@ namespace MyFps
 
             ammoCount -= amount;
             return true;
+        }
+
+        //03 저장된 총알 개수를 불러올 때 사용하는 함수
+        public void LoadAmmo(int amount)
+        {
+            ammoCount = amount;
+        }
+
+        //04 새 게임 시작 시 스탯을 초기화하는 함수
+        public void ResetStats()
+        {
+            ammoCount = 0;
+            HasPistol = false;
+            hasHeartKey1 = false;
+            hasHeartKey2 = false;
+            hasLeftEye = false;
+            hasRightEye = false;
+            isPuzzleSolved = false;
         }
         #endregion
 

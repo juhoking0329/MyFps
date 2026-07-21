@@ -37,6 +37,7 @@ namespace MyFps
         [SerializeField] private float attackDamage = 5f;   //공격력
         [SerializeField] private float attackDelay = 1.5f;  //공격 주기
         private float attackTimer = 0f;
+        private float lastAttackTime = -999f; // 중복 공격 방지용
 
         //체력
         [SerializeField] private float maxHealth = 20f;
@@ -165,6 +166,26 @@ namespace MyFps
                     break;
             }
         }
+
+        private void OnAnimatorMove()
+        {
+            if (animator == null || !animator.applyRootMotion) return;
+
+            // R_Attack 상태일 때는 Y축(높이) 변경을 무시하여 땅으로 꺼지는 현상 방지
+            if (currentState == RobotState.R_Attack)
+            {
+                Vector3 newPos = animator.rootPosition;
+                newPos.y = transform.position.y; // 현재 높이 유지
+                transform.position = newPos;
+                transform.rotation = animator.rootRotation;
+            }
+            else
+            {
+                // 나머지 상태(이동, 죽음 등)에서는 루트 모션을 정상적으로 모두 적용
+                transform.position = animator.rootPosition;
+                transform.rotation = animator.rootRotation;
+            }
+        }
         #endregion
 
         #region Custom Method
@@ -187,13 +208,17 @@ namespace MyFps
             }
         }
 
-        //공격 (애니메이션 이벤트)
+        //공격 (애니메이션 이벤트 또는 타이머 호출)
         public void Attack()
         {
             if (thePlayer == null || isDeath) return;
 
+            // 0.5초 이내에 연속으로 공격이 들어오지 않도록 방어 (애니메이션 이벤트와 타이머 중복 실행 방지)
+            if (Time.time - lastAttackTime < 0.5f) return;
+            lastAttackTime = Time.time;
+
             float distance = Vector3.Distance(thePlayer.position, transform.position);
-            if (distance <= attakRange + 0.5f) // 약간의 보정값
+            if (distance <= attakRange + 0.5f) // 약간의 보정치
             {
                 IDamageable damageable = thePlayer.GetComponent<IDamageable>();
                 if(damageable != null)
@@ -224,6 +249,9 @@ namespace MyFps
         void Die()
         {
             isDeath = true;
+
+            // 애니메이터 Root Motion 유지 (죽는 애니메이션에서 바닥으로 떨어지는 모션 적용을 위해 true 유지)
+            animator.applyRootMotion = true;
 
             //배경음 복원
             if (jumpScareBgm != null) jumpScareBgm.Stop();

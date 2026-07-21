@@ -473,7 +473,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &49751114
 RectTransform:
   m_ObjectHideFlags: 0
@@ -509,7 +509,7 @@ MonoBehaviour:
   mainMenuUI: {fileID: 1231916414}
   creditsUI: {fileID: 49751113}
   creditsTextRect: {fileID: 506659255}
-  scrollSpeed: 150
+  scrollSpeed: 100
 --- !u!114 &49751116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1841,8 +1841,8 @@ MonoBehaviour:
     \uBC31 \uB450\uC0B0\r\n\uC544\uD2B8        \uAE40 \uD55C\uBCC4\r\n\uD2B9\uBCC4\uD788
     \uACE0\uB9C8\uC6B4 \uBD84 \uC0AC\uC7A5\uB2D8 "
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 23723aed5d631a44ba883d48b1c5f63d, type: 2}
-  m_sharedMaterial: {fileID: 5576930495947025139, guid: 23723aed5d631a44ba883d48b1c5f63d, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 4d0a33d1b1eae49408e75c27c9de594c, type: 2}
+  m_sharedMaterial: {fileID: -8117623315117244315, guid: 4d0a33d1b1eae49408e75c27c9de594c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -10241,7 +10241,8 @@ MonoBehaviour:
   loadSceneName: Intro
   mainMenuUI: {fileID: 1231916414}
   optionsUI: {fileID: 1147311636}
-  creditsMenu: {fileID: 1543858816}
+  creditsMenu: {fileID: 49751115}
+  loadGameButton: {fileID: 215917940}
 --- !u!4 &1942460121
 Transform:
   m_ObjectHideFlags: 0

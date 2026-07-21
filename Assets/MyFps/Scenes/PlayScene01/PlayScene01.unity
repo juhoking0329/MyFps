@@ -7179,10 +7179,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineBasicMultiChannelPerlin
-  NoiseProfile: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
+  NoiseProfile: {fileID: 11400000, guid: e9ce97b7a206dc64d90931ea044e0c72, type: 2}
   PivotOffset: {x: 0, y: 0, z: 0}
-  AmplitudeGain: 1
-  FrequencyGain: 1
+  AmplitudeGain: 0.1
+  FrequencyGain: 0.1
   m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!95 &378762510 stripped
 Animator:
@@ -11207,6 +11207,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: AudioManager
       objectReference: {fileID: 0}
+    - target: {fileID: 5505137470345213883, guid: a8c45d09fcc1473459b43180b3a8a538, type: 3}
+      propertyPath: sounds.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5505137470345213883, guid: a8c45d09fcc1473459b43180b3a8a538, type: 3}
+      propertyPath: sounds.Array.data[5].name
+      value: BGM01
+      objectReference: {fileID: 0}
+    - target: {fileID: 5505137470345213883, guid: a8c45d09fcc1473459b43180b3a8a538, type: 3}
+      propertyPath: sounds.Array.data[7].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 7d57b46d6cc3dd4429da47b11977bbae, type: 3}
+    - target: {fileID: 5505137470345213883, guid: a8c45d09fcc1473459b43180b3a8a538, type: 3}
+      propertyPath: sounds.Array.data[7].loop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5505137470345213883, guid: a8c45d09fcc1473459b43180b3a8a538, type: 3}
+      propertyPath: sounds.Array.data[7].name
+      value: BGM01
+      objectReference: {fileID: 0}
+    - target: {fileID: 5505137470345213883, guid: a8c45d09fcc1473459b43180b3a8a538, type: 3}
+      propertyPath: sounds.Array.data[7].pitch
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5505137470345213883, guid: a8c45d09fcc1473459b43180b3a8a538, type: 3}
+      propertyPath: sounds.Array.data[7].volume
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -13046,6 +13074,50 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1759780243}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1799429485
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1799429487}
+  - component: {fileID: 1799429486}
+  m_Layer: 0
+  m_Name: SaveLoadManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1799429486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1799429485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efdb3b43508ad8e4599fb2bc5756bfcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MyFps.AutoSaveTrigger
+--- !u!4 &1799429487
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1799429485}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1806113568
 GameObject:
   m_ObjectHideFlags: 0
@@ -16239,6 +16311,10 @@ PrefabInstance:
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 4804676765520433604, guid: 9a665038942a60443a7f4e2ad38570aa, type: 2}
+    - target: {fileID: 2600734971428315664, guid: 6e7e81fb2d0d5d544a86d57f9fdc6671, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2818874430525482419, guid: 6e7e81fb2d0d5d544a86d57f9fdc6671, type: 3}
       propertyPath: m_fontAsset
       value: 
@@ -16263,6 +16339,10 @@ PrefabInstance:
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 4804676765520433604, guid: 9a665038942a60443a7f4e2ad38570aa, type: 2}
+    - target: {fileID: 3553517567645334478, guid: 6e7e81fb2d0d5d544a86d57f9fdc6671, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4145679323527937891, guid: 6e7e81fb2d0d5d544a86d57f9fdc6671, type: 3}
       propertyPath: m_fontAsset
       value: 
@@ -16660,7 +16740,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 87558946989291f4ba4e581613d3cf76, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
@@ -16854,3 +16934,4 @@ SceneRoots:
   - {fileID: 563655875}
   - {fileID: 1649009913}
   - {fileID: 8249672876250348092}
+  - {fileID: 1799429487}

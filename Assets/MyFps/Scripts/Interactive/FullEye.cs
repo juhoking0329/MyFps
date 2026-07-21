@@ -24,21 +24,16 @@ namespace MyFps
             // 퍼즐이 이미 풀려있으면 무시
             if (PlayerStats.Instance.IsPuzzleSolved) return;
 
-            bool placedLeft = false;
-            bool placedRight = false;
-
             // LeftEye 배치
             if (PlayerStats.Instance.HasLeftEye && leftEyeVisual != null && !leftEyeVisual.activeSelf)
             {
                 leftEyeVisual.SetActive(true);
-                placedLeft = true;
             }
 
             // RightEye 배치
             if (PlayerStats.Instance.HasRightEye && rightEyeVisual != null && !rightEyeVisual.activeSelf)
             {
                 rightEyeVisual.SetActive(true);
-                placedRight = true;
             }
 
             // 둘 다 활성화되었는지 확인하여 퍼즐 풀림 처리
